@@ -9,38 +9,17 @@ A wallpaper plugin integrating [wallpaper engine](https://store.steampowered.com
 - Support **scene(2d)**,**video**,**web** wallpaper types
 - Requires *Wallpaper Engine* installed on steam
 - Requires [CMake 3.16+](#dependencies)
-- Requires [qt 5.13+](#dependencies) for playing video(no mpv), or [mpv](#dependencies) instead  
+- Requires [qt 5.13+](#dependencies) for playing video
 
 ## Install
 #### Dependencies
-Debian:  
-```sh
-sudo apt install plasma-workspace-dev gstreamer1.0-libav \
-liblz4-dev libmpv-dev python3-websockets qtbase5-private-dev \
-libqt5x11extras5-dev qml-module-qt-labs-folderlistmodel \
-qml-module-qtwebchannel qml-module-qtwebsockets
-```  
-
-Fedora:  
-```sh
-# Please add "RPM Fusion" repo first
-sudo dnf install plasma-workspace-devel kf5-plasma-devel gstreamer1-libav \
-lz4-devel mpv-libs-devel python3-websockets qt5-qtbase-private-devel \
-qt5-qtx11extras-devel qt5-qtwebchannel-devel qt5-qtwebsockets-devel
-```
 
 Arch:  
 ```sh
 sudo pacman -S git cmake extra-cmake-modules plasma-framework gst-libav \
-base-devel mpv python-websockets qt5-declarative qt5-websockets qt5-webchannel
+base-devel python-websockets qt5-declarative qt5-websockets qt5-webchannel
 ```
 
-Void:  
-```sh
-sudo xbps-install -S git cmake extra-cmake-modules plasma-framework \
-gst-libav base-devel mpv python3-websockets qt5-declarative qt5-websockets \
-qt5-webchannel plasma-workspace-devel mpv-devel liblz4-devel
-```
 #### Build and Install
 ```sh
 # Download source
@@ -124,10 +103,6 @@ Some wallpaper using webgl may not work, and performance may be bad.
 The default video backend of this plugin.  
 It's using GStreamer to play video.  
 [hwdecode](https://wiki.archlinux.org/title/GStreamer#Hardware_video_acceleration) for GStreamer
-
-#### Mpv
-Need to compile the plugin lib.  
-The config is set to `hwdec=auto`, and is not configurable for now.  
 
 ### Acknowledgments
 - [RePKG](https://github.com/notscuffed/repkg)

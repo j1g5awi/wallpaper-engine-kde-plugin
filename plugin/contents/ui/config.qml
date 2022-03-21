@@ -22,7 +22,6 @@ ColumnLayout {
 
     property alias  cfg_Fps:                settingPage.cfg_Fps
     property alias  cfg_Volume:             settingPage.cfg_Volume
-    property alias  cfg_MpvStats:           settingPage.cfg_MpvStats
     property alias  cfg_MuteAudio:          settingPage.cfg_MuteAudio
     property alias  cfg_MouseInput:         settingPage.cfg_MouseInput
     property alias  cfg_ResumeTime:         settingPage.cfg_ResumeTime
@@ -30,9 +29,7 @@ ColumnLayout {
     property alias  cfg_RandomizeWallpaper: settingPage.cfg_RandomizeWallpaper
     property int    cfg_DisplayMode
     property int    cfg_PauseMode
-    property int    cfg_VideoBackend
 
-    //property alias  cfg_UseMpv
     //property string cfg_BackgroundColor: "black"
 
     property string cfg_CustomConf

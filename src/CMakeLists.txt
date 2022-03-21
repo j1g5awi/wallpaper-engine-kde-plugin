@@ -1,5 +1,4 @@
 find_package(Qt5 COMPONENTS Quick Qml REQUIRED)
-add_subdirectory(backend/mpv)
 add_subdirectory(backend/scene)
 
 set(CMAKE_AUTOMOC ON)
@@ -18,8 +17,7 @@ add_library(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME} 
 	PRIVATE
 	Qt5::Quick
-	Qt5::Qml 
-	mpvbackend
+	Qt5::Qml
 	scenebackend
 )
 

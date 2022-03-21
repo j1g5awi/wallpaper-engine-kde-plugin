@@ -11,7 +11,6 @@ Kirigami.FormLayout {
     id: settingTab
     property alias cfg_Fps: sliderFps.value
     property alias cfg_Volume: sliderVol.value
-    property alias cfg_MpvStats: ckbox_mpvStats.checked
     property alias cfg_MuteAudio: ckbox_muteAudio.checked
     property alias cfg_MouseInput: ckbox_mouseInput.checked
     property alias cfg_ResumeTime: resumeSpin.value
@@ -69,25 +68,6 @@ Kirigami.FormLayout {
         textRole: "text"
         onActivated: cfg_DisplayMode = Common.cbCurrentValue(this)
         Component.onCompleted: currentIndex = Common.cbIndexOfValue(this, cfg_DisplayMode)
-    }
-    ComboBox {
-        Kirigami.FormData.label: "Video backend:"
-        implicitWidth: comboBoxWidth
-        model: [
-            {
-                text: "QtMultimedia",
-                value: Common.VideoBackend.QtMultimedia,
-                enabled: true
-            },
-            {
-                text: "Mpv",
-                value: Common.VideoBackend.Mpv,
-                enabled: libcheck.wallpaper
-            }
-        ].filter(el => el.enabled)
-        textRole: "text"
-        onActivated: cfg_VideoBackend = Common.cbCurrentValue(this)
-        Component.onCompleted: currentIndex = Common.cbIndexOfValue(this, cfg_VideoBackend)
     }
     RowLayout {
         spacing: 0
@@ -156,17 +136,6 @@ Kirigami.FormLayout {
             stepSize: 5.0
             snapMode: Slider.SnapOnRelease
         }
-    }
-    Kirigami.Separator {
-        Kirigami.FormData.isSection: true
-        Kirigami.FormData.label: "Mpv"
-        Kirigami.FormData.labelAlignment: Qt.AlignLeft
-        visible: libcheck.wallpaper
-    }
-    CheckBox{
-        Kirigami.FormData.label:  "Show stats"
-        id: ckbox_mpvStats
-        visible: libcheck.wallpaper
     }
     Kirigami.Separator {
         Kirigami.FormData.isSection: true

@@ -2,4 +2,3 @@ module com.github.catsout.wallpaperEngineKde
 plugin WallpaperEngineKde
 classname MouseGrabber
 classname SceneViewer
-classname MpvObject

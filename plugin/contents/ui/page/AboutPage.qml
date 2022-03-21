@@ -104,7 +104,7 @@ Kirigami.FormLayout {
                 },
                 {
                     ok: libcheck.wallpaper,
-                    name: "plugin lib (for scene,mpv)"
+                    name: "plugin lib (for scene)"
                 }
             ];
             return _model;

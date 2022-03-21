@@ -14,7 +14,6 @@ Rectangle {
     property string filterStr: wallpaper.configuration.FilterStr
 
     property int    displayMode: wallpaper.configuration.DisplayMode
-    property int    videoBackend: wallpaper.configuration.VideoBackend
     property int    volume: wallpaper.configuration.Volume
     property int    switchTimer: wallpaper.configuration.SwitchTimer
     property int    fps: wallpaper.configuration.Fps
@@ -22,7 +21,6 @@ Rectangle {
     property bool   mute: wallpaper.configuration.MuteAudio
     property bool   randomizeWallpaper: wallpaper.configuration.RandomizeWallpaper
     property bool   mouseInput: wallpaper.configuration.MouseInput
-    property bool   mpvStats: wallpaper.configuration.MpvStats
     // auto pause
     property bool   ok: windowModel.playVideoWallpaper
 
@@ -238,9 +236,7 @@ Rectangle {
         // choose backend
         switch (background.type) {
             case 'video':
-                if(background.videoBackend == Common.VideoBackend.Mpv && background.hasLib)
-                    qmlsource = "backend/Mpv.qml";
-                else qmlsource = "backend/QtMultimedia.qml";
+                qmlsource = "backend/QtMultimedia.qml";
                 properties = {};
                 break;
             case 'web':
