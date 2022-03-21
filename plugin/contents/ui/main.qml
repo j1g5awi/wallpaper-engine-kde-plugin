@@ -272,7 +272,6 @@ Rectangle {
 
         // background signal connect
         background.typeChanged.connect(loadBackend);
-        background.videoBackendChanged.connect(loadBackend);
         background.sourceChanged.connect(sourceCallback);
         background.okChanged.connect(autoPause);
 
