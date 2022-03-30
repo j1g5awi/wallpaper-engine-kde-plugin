@@ -1,5 +1,6 @@
 pragma Singleton
 import QtQuick 2.0
+
 import "utils.mjs" as Utils
 
 QtObject {
@@ -19,6 +20,8 @@ QtObject {
         Name,
         Modified
     }
+
+    readonly property string repo_url: 'https://github.com/catsout/wallpaper-engine-kde-plugin'
 
     property var filterModel: ListModel {
         ListElement { text: "Favorite";     type:"favor";         key:"favor";         def: 0}
