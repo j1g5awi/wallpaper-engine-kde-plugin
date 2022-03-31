@@ -28,7 +28,8 @@ ColumnLayout {
     property alias  cfg_SwitchTimer:        settingPage.cfg_SwitchTimer
     property alias  cfg_RandomizeWallpaper: settingPage.cfg_RandomizeWallpaper
     property int    cfg_DisplayMode
-    property int    cfg_PauseMode
+    property int    cfg_FocusPauseMode
+    property int    cfg_MaximizedPauseMode
 
     //property string cfg_BackgroundColor: "black"
 

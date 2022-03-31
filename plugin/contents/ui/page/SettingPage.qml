@@ -42,33 +42,55 @@ Flickable {
             header.color: Theme.activeBackgroundColor
 
             OptionItem {
-                text: 'Pause'
+                text: 'Focus Window Exists'
                 text_color: Theme.textColor
                 icon: '../../images/pause.svg'
                 actor:  ComboBox {
                     implicitWidth: comboBoxWidth
-                    id: pauseMode
+                    id: focusPauseMode
                     model: [
                         {
-                            text: "Maximized Window",
-                            value: Common.PauseMode.Max
+                            text: "Keep Running",
+                            value: Common.PauseMode.KeepRunning
                         },
                         {
-                            text: "Focus Window",
-                            value: Common.PauseMode.Focus
+                            text: "Mute Audio",
+                            value: Common.PauseMode.MuteAudio
                         },
                         {
-                            text: "Any Window",
-                            value: Common.PauseMode.Any
-                        },
-                        {
-                            text: "Never",
-                            value: Common.PauseMode.Never
+                            text: "Pause",
+                            value: Common.PauseMode.Pause
                         }
                     ]
                     textRole: "text"
-                    onActivated: cfg_PauseMode = Common.cbCurrentValue(this)
-                    Component.onCompleted: currentIndex = Common.cbIndexOfValue(this, cfg_PauseMode)
+                    onActivated: cfg_FocusPauseMode = Common.cbCurrentValue(this)
+                    Component.onCompleted: currentIndex = Common.cbIndexOfValue(this, cfg_FocusPauseMode)
+                }
+            }
+            OptionItem {
+                text: 'Maximized Window Exists'
+                text_color: Theme.textColor
+                icon: '../../images/pause.svg'
+                actor:  ComboBox {
+                    implicitWidth: comboBoxWidth
+                    id: maximizedPauseMode
+                    model: [
+                        {
+                            text: "Keep Running",
+                            value: Common.PauseMode.KeepRunning
+                        },
+                        {
+                            text: "Mute Audio",
+                            value: Common.PauseMode.MuteAudio
+                        },
+                        {
+                            text: "Pause",
+                            value: Common.PauseMode.Pause
+                        }
+                    ]
+                    textRole: "text"
+                    onActivated: cfg_MaximizedPauseMode = Common.cbCurrentValue(this)
+                    Component.onCompleted: currentIndex = Common.cbIndexOfValue(this, cfg_MaximizedPauseMode)
                 }
             }
             OptionItem {

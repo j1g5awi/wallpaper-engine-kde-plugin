@@ -65,7 +65,11 @@ Item {
     property string activity
     property var screenGeometry
 
-    property int modePlay: wallpaper.configuration.PauseMode
+    property int focusPauseMode: wallpaper.configuration.FocusPauseMode
+    property int maximizedPauseMode: wallpaper.configuration.MaximizedPauseMode
+
+    property bool mute: false
+
     property int resumeTime: wallpaper.configuration.ResumeTime
 
     Timer{
@@ -85,10 +89,24 @@ Item {
         playTimer.stop();
         playVideoWallpaper = false;
     }
-    function playBy(value) {
-        if(value) play();
-        else pause();
+    
+    function playBy(pauseMode) {
+        switch (pauseMode) {
+        case Common.PauseMode.KeepRunning:
+            play();
+            break;
+        case Common.PauseMode.MuteAudio:
+            mute = true;
+            play();
+            break;
+        case Common.PauseMode.Pause:
+            pause();
+            break;
+        }
     }
+
+    onFocusPauseModeChanged: _updateWindowsinfo();
+    onMaximizedPauseModeChanged: _updateWindowsinfo();
 
     TaskManager.ActivityInfo { 
         id: activityInfo 
@@ -190,10 +208,6 @@ Item {
         triggerTimer.start();
     }
     function _updateWindowsinfo() {
-        if(modePlay === Common.PauseMode.Never) {
-            play();
-            return;
-        }
         const basefilters = {
             IsWindow: true,
             SkipTaskbar: false,
@@ -222,19 +236,13 @@ Item {
 
         const activeModel = taskFilter.filter({IsActive: true}, notMinWModel);
 
-
-        switch (modePlay) {
-        case Common.PauseMode.Any:
-            playBy(notMinWModel.length === 0);
-            break;
-        case Common.PauseMode.Max:
-            playBy(maxWModel.length === 0);
-            break;
-        case Common.PauseMode.Focus:
-            playBy(activeModel.length === 0);
-            break;
-        default:
-            playBy(true);
+        mute = false;
+        if (maxWModel.length !== 0){
+            playBy(maximizedPauseMode);
+        } else if (activeModel.length !== 0){
+            playBy(focusPauseMode);
+        } else {
+            play();
         }
 
         if(logging) {

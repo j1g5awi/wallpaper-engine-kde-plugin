@@ -8,7 +8,7 @@ Item{
     property int displayMode: background.displayMode
     property var volumeFade: Common.createVolumeFade(
         videoItem, 
-        Qt.binding(function() { return background.mute ? 0 : background.volume; }),
+        Qt.binding(function() { return background.mute || windowModel.mute ? 0 : background.volume; }),
         (volume) => { player.volume = volume / 100.0; }
     )
 

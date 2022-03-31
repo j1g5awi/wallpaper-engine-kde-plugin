@@ -5,10 +5,9 @@ import "utils.mjs" as Utils
 
 QtObject {
     enum PauseMode {
-        Never,
-        Any,
-        Max,
-        Focus
+        KeepRunning,
+        MuteAudio,
+        Pause
     }
     enum DisplayMode {
         Aspect,
