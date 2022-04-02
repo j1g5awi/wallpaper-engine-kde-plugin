@@ -37,6 +37,7 @@
     <entry name="MaximizedPauseMode" type="Int">
       <label>Maximized Pause mode</label>
       <default>0</default>
+    </entry>
     <entry name="SortMode" type="Int">
       <label>Sort mode</label>
       <default>0</default>
