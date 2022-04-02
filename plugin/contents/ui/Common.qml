@@ -128,7 +128,8 @@ QtObject {
             }
         }
     }
-
+    
+    readonly property var regex_workshop_online: new RegExp('^[0-9]+$', 'g');
 
     function getWorkshopDir(steamLibraryPath) {
         return steamLibraryPath + "/steamapps/workshop/content/431960";
@@ -149,6 +150,10 @@ QtObject {
     function getAssetsPath(steamLibrary) {
         return steamLibrary + "/steamapps/common/wallpaper_engine/assets";
     }
+    function getWorkshopUrl(workshopid) {
+        return "https://steamcommunity.com/sharedfiles/filedetails/?id=" + workshopid;
+    }
+    
     
     // wallpaper list modle
     function getWpModelPreviewSource(model) {
@@ -184,7 +189,6 @@ QtObject {
         }
         return Qt.btoa(JSON.stringify(conf, setTojson));
     }
-
 
     function checklib(libName, parentItem) {
         let ok = false;
