@@ -14,6 +14,7 @@ Rectangle {
     property string filterStr: wallpaper.configuration.FilterStr
 
     property int    displayMode: wallpaper.configuration.DisplayMode
+    property real   videoRate: wallpaper.configuration.VideoRate
     property int    volume: wallpaper.configuration.Volume
     property int    switchTimer: wallpaper.configuration.SwitchTimer
     property int    fps: wallpaper.configuration.Fps
