@@ -14,8 +14,7 @@ ColumnLayout {
     
     property string cfg_SteamLibraryPath
     property string cfg_WallpaperWorkShopId
-    property string cfg_WallpaperFilePath
-    property string cfg_WallpaperType
+    property string cfg_WallpaperSource
     property string cfg_FilterStr
     property int    cfg_SortMode
 
@@ -60,7 +59,6 @@ ColumnLayout {
 
     property var libcheck: ({
         wallpaper: Common.checklib_wallpaper(root),
-        folderlist: Common.checklib_folderlist(root),
         qtwebsockets: Common.checklib_websockets(root),
         qtwebchannel: Common.checklib_webchannel(root)
     })
@@ -75,26 +73,19 @@ ColumnLayout {
             `, this);
         }
     }
-    property var wpListModel: {
-        if(!libcheck.folderlist) { 
-            wpListModel = null;
-        } else {
-            wpListModel = Qt.createQmlObject(`
-                import QtQuick 2.0;
-                WallpaperListModel {
-                    workshopDirs: Common.getProjectDirs(cfg_SteamLibraryPath)
-                    filterStr: cfg_FilterStr
-                    sortMode: cfg_SortMode
-                    initItemOp: (item) => {
-                        if(!root.customConf) return;
-                        item.favor = root.customConf.favor.has(item.workshopid);
-                    }
-                    enabled: Boolean(cfg_SteamLibraryPath)
-                    readfile: pyext.readfile
-                }
-            `, this);
+    WallpaperListModel {
+        id: wpListModel
+        workshopDirs: Common.getProjectDirs(cfg_SteamLibraryPath)
+        filterStr: cfg_FilterStr
+        sortMode: cfg_SortMode
+        initItemOp: (item) => {
+            if(!root.customConf) return;
+            item.favor = root.customConf.favor.has(item.workshopid);
         }
+        enabled: Boolean(cfg_SteamLibraryPath)
+        readfile: pyext.readfile
     }
+
     Component.onDestruction: {
         if(this.pyext) this.pyext.destroy();
         if(this.wpListModel) this.wpListModel.destroy();

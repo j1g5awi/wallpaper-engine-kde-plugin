@@ -71,7 +71,7 @@ static void TraverseNode(const std::function<void(SceneNode*)>& func, SceneNode*
 }
 
 static void CheckAndSetSprite(Scene& scene, vulkan::CustomShaderPass::Desc& desc,
-                              Span<std::string> texs) {
+                              Span<const std::string> texs) {
     for (uint i = 0; i < texs.size(); i++) {
         auto& tex = texs[i];
         if (! tex.empty() && ! IsSpecTex(tex) && scene.textures.count(tex) != 0) {
@@ -113,7 +113,7 @@ static void ToGraphPass(SceneNode* node, std::string_view output, uint32_t imgId
             for (auto& n : eff->nodes) {
                 if (cmdItor != cmdEnd && nodePos == cmdItor->afterpos) {
                     rg::addCopyPass(
-                        rgraph, rg::createTexDesc(cmdItor->dst), rg::createTexDesc(cmdItor->src));
+                        rgraph, rg::createTexDesc(cmdItor->src), rg::createTexDesc(cmdItor->dst));
                     cmdItor++;
                 }
                 auto& name = n.output;
@@ -168,10 +168,10 @@ static void ToGraphPass(SceneNode* node, std::string_view output, uint32_t imgId
                     desc.type = ! IsSpecTex(url) ? rg::TexNode::TexType::Imported
                                                  : rg::TexNode::TexType::Temp;
                     input     = builder.createTexNode(desc);
-                    if (sstart_with(url, WE_MIP_MAPPED_FRAME_BUFFER)) {
-                        extra.use_mipmap_framebuffer = true;
+					if (IsSpecTex(url))
                         builder.markVirtualWrite(input);
-                    }
+                    if (sstart_with(url, WE_MIP_MAPPED_FRAME_BUFFER))
+                        extra.use_mipmap_framebuffer = true;
                 }
 
                 if (url == output) {

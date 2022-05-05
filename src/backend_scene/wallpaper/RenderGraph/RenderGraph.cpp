@@ -59,7 +59,7 @@ void RenderGraphBuilder::markSelfWrite(TexNode* tex) {
     });
 }
 void RenderGraphBuilder::markVirtualWrite(TexNode* tex) {
-    if(tex->version() > 0) return;
+    if(tex->version() > 0 || tex->writer() != nullptr) return;
     m_rg.addPass<VirtualPass>("virtual pass", PassNode::Type::Virtual, [tex](RenderGraphBuilder& builder, auto&) {
         builder.write(tex);
     });
@@ -127,7 +127,7 @@ const PassNode& RenderGraphBuilder::workPassNode() const {
     return *m_passnode_wip;
 }
 
-std::vector<std::vector<TexNode*>> RenderGraph::getLastReadTexs(Span<NodeID> nodes) const {
+std::vector<std::vector<TexNode*>> RenderGraph::getLastReadTexs(Span<const NodeID> nodes) const {
     std::vector<std::vector<TexNode*>> res;
     std::vector<Set<NodeID>> nodes_ids;
     // get in

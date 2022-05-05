@@ -287,7 +287,7 @@ void CustomShaderPass::prepare(Scene& scene, const Device& device, RenderingReso
                     }
                     if (mesh.IndexCount() > 0) {
                         auto&  indice = mesh.GetIndexArray(0);
-                        size_t count  = (indice.DataCount() * 2) / 3;
+                        size_t count  = (indice.RenderDataCount() * 2) / 3;
                         draw_count    = count * 3;
                         auto& buf     = index_buf;
                         if (! dyn_buf->writeToBuf(buf,
@@ -306,7 +306,8 @@ void CustomShaderPass::prepare(Scene& scene, const Device& device, RenderingReso
         auto* shader_updater = scene.shaderValueUpdater.get();
         auto& sprites        = m_desc.sprites_map;
         auto& vk_textures    = m_desc.vk_textures;
-        m_desc.update_op     = [shader_updater,
+
+        m_desc.update_op = [shader_updater,
                             block,
                             buf,
                             bufref,
@@ -318,11 +319,7 @@ void CustomShaderPass::prepare(Scene& scene, const Device& device, RenderingReso
                                                        wallpaper::ShaderValue value) {
                 UpdateUniform(buf, *bufref, block, name, value);
             };
-            auto exists_unf_op = [&block](std::string_view name) {
-                return exists(block.member_map, name);
-            };
-
-            shader_updater->UpdateUniforms(node, sprites, exists_unf_op, update_unf_op);
+            shader_updater->UpdateUniforms(node, sprites, update_unf_op);
             // update image slot for sprites
             {
                 for (auto& [i, sp] : sprites) {
@@ -332,6 +329,11 @@ void CustomShaderPass::prepare(Scene& scene, const Device& device, RenderingReso
             }
             if (update_dyn_buf_op) update_dyn_buf_op();
         };
+
+        auto exists_unf_op = [&block](std::string_view name) {
+            return exists(block.member_map, name);
+        };
+        shader_updater->InitUniforms(node, exists_unf_op);
 
         {
             auto&      default_values = mesh.Material()->customShader.shader->default_uniforms;

@@ -4,22 +4,55 @@ A wallpaper plugin integrating [wallpaper engine](https://store.steampowered.com
 ## Note
 - Known issues:
   - Some scene wallpapers may **crash** your KDE.  
-    Remove `WallpaperFilePath` line in `~/.config/plasma-org.kde.plasma.desktop-appletsrc` and restart KDE to fix.  
+    Remove `WallpaperSource` line in `~/.config/plasma-org.kde.plasma.desktop-appletsrc` and restart KDE to fix.  
   - Mouse long press (to enter panel edit mode) is broken on desktop.
+  - Screen Locking is not supported, please not use this plugin in screen locking.  
 - Support **scene(2d)**,**video**,**web** wallpaper types
 - Requires *Wallpaper Engine* installed on steam
-- Requires [CMake 3.16+](#dependencies)
-- Requires [qt 5.13+](#dependencies) for playing video
-- Requires vulkan 1.1+, opengl [External Memory Object](https://www.khronos.org/registry/OpenGL/extensions/EXT/EXT_external_objects.txt) extension
+- Requires Python 3.3+
+- Requires CMake 3.16+
+- Requires Qt 5.13+ for playing video
+- Requires Vulkan 1.1+, Opengl [External Memory Object](https://www.khronos.org/registry/OpenGL/extensions/EXT/EXT_external_objects.txt) extension
+- Requires [vulkan driver](https://wiki.archlinux.org/title/Vulkan#Installation) installed  
+If you are using amd, please choose RADV driver.  
 
 ## Install
 #### Dependencies
+Debian:  
+```sh
+sudo apt install build-essential libvulkan-dev plasma-workspace-dev gstreamer1.0-libav \
+liblz4-dev libmpv-dev python3-websockets qtbase5-private-dev \
+libqt5x11extras5-dev \
+qml-module-qtwebchannel qml-module-qtwebsockets
+```  
+
+Fedora:  
+```sh
+# Please add "RPM Fusion" repo first
+sudo dnf install vulkan-headers plasma-workspace-devel kf5-plasma-devel gstreamer1-libav \
+lz4-devel mpv-libs-devel python3-websockets qt5-qtbase-private-devel \
+qt5-qtx11extras-devel qt5-qtwebchannel-devel qt5-qtwebsockets-devel
+```
 
 Arch:  
 ```sh
 sudo pacman -S extra-cmake-modules plasma-framework gst-libav \
 base-devel python-websockets qt5-declarative qt5-websockets qt5-webchannel vulkan-headers 
 ```
+
+Void:  
+```sh
+sudo xbps-install -S extra-cmake-modules plasma-framework \
+gst-libav base-devel mpv python3-websockets qt5-declarative qt5-websockets \
+qt5-webchannel plasma-workspace-devel mpv-devel liblz4-devel Vulkan-Headers
+```
+
+Fedora Kinoite:  
+see [install via rpm-ostree](rpm)
+
+#### Note for kde store
+Still need to run commands below to get scene and mpv work.  
+Every time you receive update in discover, you should run these commands to update.  
 
 #### Build and Install
 ```sh
@@ -63,6 +96,20 @@ Re-login is ok
 ### Scene:
 Scene wallpapers are supported by vulkan 1.1  
 Requires *Wallpaper Engine* installed for assets(shaders,pictures...)
+
+#### standalone
+Only for testing and debug  
+Requires glfw  
+```
+# git clone and init submodule
+cd src/backend_scene/standalone_view
+mkdir build && cd build
+cmake .. -DCMAKE_BUILD_TYPE=Release -DBUILD_QML=ON
+make 
+
+./sceneviewer --help
+```
+
 #### open-source libraries
 [argparse](https://github.com/p-ranav/argparse) - Command line argument parser  
 [stb](https://github.com/nothings/stb) - Image loading  
@@ -94,7 +141,6 @@ Requires *Wallpaper Engine* installed for assets(shaders,pictures...)
 	- [ ] Visualization
 - [x] Particle System
 	- [x] Renderers
-		- [ ] Rope
 	- [x] Emitters
 		- [ ] Duration 
 	- [x] Initializers
@@ -123,7 +169,7 @@ It's using GStreamer to play video.
 ## About integrating into other desktop environments
 There is no general way. If there is a way to have good support for most desktop environments, why not we just require wallpaper engine itself to support linux. Some similar apps like [lively](https://github.com/rocksdanister/lively) and [ScreenPlay](https://store.steampowered.com/app/672870/ScreenPlay) can benefit from that, but that way doesn't exist. Actually the integration and implement are separated, for all integration ways, the implement is shared. So if there is a general way, we can move to it easily.  
 
-The major work of this plugin is the scene wallpaper [renderer](src/backend_scene/wallpaper). If you want to integrating this into other desktop environments, here are some [examples](src/backend_scene/standalone_view). Currently this renderer is rendering under vulkan and sharing to opengl texture which will be read by qml(plasmashell) in kde. You can integrate this renderer to anything that can show vulkan or opengl textures.  
+The major work of this plugin is the scene wallpaper [renderer](src/backend_scene/wallpaper). If you want to integrate this into other desktop environments, here are some [examples](src/backend_scene/standalone_view). Currently this renderer is rendering under vulkan and sharing to opengl texture which will be read by qml(plasmashell) in kde. You can integrate this renderer into anything that can show vulkan or opengl textures.  
 
 ## Acknowledgments
 - [RePKG](https://github.com/notscuffed/repkg)
@@ -134,6 +180,6 @@ The major work of this plugin is the scene wallpaper [renderer](src/backend_scen
 - All the open-source libraries mentioned above
 
 ## Preview
-![](https://cdn.pling.com/img/f/b/9/f/63f1672d628422f92fd189fe55f60ee8c9f911a691d0745eeaf51d2c6fae6763b8f8.jpg)
-![](https://cdn.pling.com/img/d/7/9/f/c28d236408e66ba3cbca5173fb0bf4362b9df45e6e1c485deb6d9f7b4fe6adf93a2b.jpg)
 ![](https://cdn.pling.com/img/0/e/e/9/23b2aefba63630c7eb723afc202cdaaa2809d32d8a2ddca03b9fec8f82de62d721cd.jpg)
+![](https://images.pling.com/img/00/00/60/17/66/1475528/screenshot-20220402-1822442.png)
+![](https://images.pling.com/img/00/00/60/17/66/1475528/screenshot-20220401-1121383.png)

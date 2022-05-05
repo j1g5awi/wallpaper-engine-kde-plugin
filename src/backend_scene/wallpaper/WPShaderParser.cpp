@@ -155,7 +155,7 @@ void ParseWPShader(const std::string& src, WPShaderInfo* pWPShaderInfo,
                             if (value.is_string()) {
                                 std::vector<float> v;
                                 GET_JSON_VALUE(value, v);
-                                sv = Span<float>(v);
+                                sv = Span<const float>(v);
                             } else if (value.is_number()) {
                                 sv.setSize(1);
                                 GET_JSON_VALUE(value, sv[0]);
@@ -214,7 +214,10 @@ std::size_t FindIncludeInsertPos(const std::string& src, std::size_t startPos) {
         return p.find_first_of('\n', pos) + 1;
     };
 
-    std::size_t mainPos = src.find("void main(");
+    std::size_t mainPos  = src.find("void main(");
+    bool        two_main = src.find("void main(", mainPos + 2) != std::string::npos;
+    if (two_main) return 0;
+
     std::size_t pos;
     {
         const std::regex reAfters(R"(\n(attribute|varying|uniform|struct) )");

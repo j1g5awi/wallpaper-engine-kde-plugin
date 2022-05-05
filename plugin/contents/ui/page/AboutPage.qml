@@ -63,7 +63,7 @@ Flickable {
                     color: Theme.disabledTextColor
                     text: `
                         <ol>
-                        <li>Remove <i>WallpaperFilePath</i> line in <b>~/.config/plasma-org.kde.plasma.desktop-appletsrc</b></li>
+                        <li>Remove <i>WallpaperSource</i> line in <b>~/.config/plasma-org.kde.plasma.desktop-appletsrc</b></li>
                         <li>Restart KDE</li>
                         </ol>
                     `
@@ -94,10 +94,6 @@ Flickable {
                 clip: false
                 property var modelraw: {
                     const _model = [
-                        {
-                            ok: libcheck.folderlist,
-                            name: "*qt-lab-folderlist"
-                        },
                         {
                             ok: libcheck.qtwebsockets,
                             name: "*qtwebsockets (qml)"

@@ -37,8 +37,11 @@ public:
     SceneVertexArray(const SceneVertexArray&) = delete;
 
     bool AddVertex(const float*);
-    bool SetVertex(std::string_view name, Span<float> data);
+    bool SetVertex(std::string_view name, Span<const float> data);
     bool SetVertexs(std::size_t index, std::size_t count, const float* data);
+
+    bool GetOption(std::string_view) const;
+    void SetOption(std::string_view, bool);
 
     const float* Data() const { return m_pData; }
     std::size_t  DataSize() const { return m_size; }
@@ -60,10 +63,12 @@ public:
 
 private:
     const std::vector<SceneVertexAttribute> m_attributes;
-    float*                                  m_pData { nullptr };
-    std::size_t                             m_oneSize { 0 };
-    std::size_t                             m_size { 0 };
-    std::size_t                             m_capacity { 0 };
+
+    Map<std::string, bool> m_options;
+    float*                 m_pData { nullptr };
+    std::size_t            m_oneSize { 0 };
+    std::size_t            m_size { 0 };
+    std::size_t            m_capacity { 0 };
 
     uint32_t m_id;
 };

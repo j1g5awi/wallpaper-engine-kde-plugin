@@ -7,10 +7,9 @@ Rectangle {
     anchors.fill: parent
     color: wallpaper.configuration.BackgroundColor
     property string steamlibrary: Qt.resolvedUrl(wallpaper.configuration.SteamLibraryPath).toString()
-    property string source: Qt.resolvedUrl(wallpaper.configuration.WallpaperFilePath).toString()
+    property string source: Qt.resolvedUrl(wallpaper.configuration.WallpaperSource).toString()
 
     property string workshopid: wallpaper.configuration.WallpaperWorkShopId
-    property string type: wallpaper.configuration.WallpaperType
     property string filterStr: wallpaper.configuration.FilterStr
 
     property int    displayMode: wallpaper.configuration.DisplayMode
@@ -32,15 +31,31 @@ Rectangle {
 
     property var customConf: Common.loadCustomConf(wallpaper.configuration.CustomConf)
 
+    property string wallpaperPath
+    property string wallpaperType
+
     Component.onDestruction: {
         if(mouseHooker) {
             mouseHooker.destroy();
         }
     }
 
-    onSourceChanged: {
-        if(background.nowBackend === "InfoShow")
+    function applySource() {
+        const { path, type } = Common.unpackWallpaperSource(source);
+        const path_changed = background.wallpaperPath !== path;
+        const type_changed = background.wallpaperType !== type;
+        const is_infobackend = background.nowBackend === "InfoShow";
+
+        if(type_changed) wallpaperType = type;
+        if(path_changed) wallpaperPath = path;
+
+        if(type_changed || is_infobackend) {
             loadBackend();
+        } else if(path_changed) {
+            backendLoader.item.source = path;
+        }
+
+        sourceCallback();
     }
 
     function getWorkshopIDPath() {
@@ -128,8 +143,7 @@ Rectangle {
             if(this.model.count === 0) return;
             const model = this.model.get(index);
             wallpaper.configuration.WallpaperWorkShopId = model.workshopid;
-            wallpaper.configuration.WallpaperFilePath = model.path + "/" + model.file;
-            wallpaper.configuration.WallpaperType = model.type;
+            wallpaper.configuration.WallpaperSource = Common.packWallpaperSource(model);
         }
     }
     Timer {
@@ -211,7 +225,7 @@ Rectangle {
         function loadInfoShow(info) {
             this.load("backend/InfoShow.qml", {
                 wid: background.workshopid,
-                type: background.type,
+                type: background.wallpaperType,
                 info: info
             });
         }
@@ -230,12 +244,12 @@ Rectangle {
         let properties = {};
 
         // check source
-        if(!background.source || background.source == "") {
+        if(!background.source) {
             backendLoader.loadInfoShow("Source is empty. The config may be broken.");
             return;
         }
         // choose backend
-        switch (background.type) {
+        switch (background.wallpaperType) {
             case 'video':
                 qmlsource = "backend/QtMultimedia.qml";
                 properties = {};
@@ -257,24 +271,25 @@ Rectangle {
                 backendLoader.loadInfoShow("Not supported wallpaper type");
                 return; 
         }
+        properties['source'] = background.wallpaperPath;
         console.error("load backend: "+qmlsource);
         backendLoader.load(qmlsource, properties);
         sourceCallback();
     }
    
-    function autoPause() {background.ok
-                    ? backendLoader.item.play()
-                    : backendLoader.item.pause()
+    function autoPause() {
+        background.ok
+            ? backendLoader.item.play()
+            : backendLoader.item.pause();
     }
 
     Component.onCompleted: {
         // load first backend
-        loadBackend(); 
+        applySource();
 
         // background signal connect
-        background.typeChanged.connect(loadBackend);
-        background.sourceChanged.connect(sourceCallback);
         background.okChanged.connect(autoPause);
+        background.sourceChanged.connect(applySource);
 
         lauchPauseTimer.start();
         randomizeTimer.start();

@@ -41,7 +41,8 @@ RowLayout {
 
                 Label {
                     visible: cfg_WallpaperWorkShopId
-                    text: `Shopid: ${cfg_WallpaperWorkShopId}  Type: ${cfg_WallpaperType}`
+                    text: `Shopid: ${cfg_WallpaperWorkShopId}  Type: ${Common.unpackWallpaperSource(cfg_WallpaperSource).type}`
+                    //${cfg_WallpaperType}
                 }
 
                 Kirigami.ActionToolBar {
@@ -132,6 +133,11 @@ RowLayout {
                                 }
                             ]
                             children: model.map((el, index) => comp_action_sort.createObject(null, {text: el.text, act_value: el.value}))
+                        },
+                        Kirigami.Action {
+                            icon.source: '../../images/refresh.svg'
+                            text: 'Refresh'
+                            onTriggered: wpListModel.refresh()
                         }
                     ]
                 }
@@ -148,6 +154,7 @@ RowLayout {
 
                 Component.onCompleted: {
                     const refreshIndex = () => {
+                        this.item.view.model = wpListModel.model; 
                         if(this.status == Loader.Ready) {
                             this.item.setCurIndex(wpListModel.model);
                         }
@@ -163,12 +170,12 @@ RowLayout {
                     anchors.fill: parent
 
                     readonly property var currentModel: view.model.get(view.currentIndex)
+                    readonly property var defaultModel: ListModel {}
 
                     // from org.kde.image
                     view.implicitCellWidth: Screen.width / 10 + Kirigami.Units.smallSpacing * 2
                     view.implicitCellHeight: Screen.height / 10 + Kirigami.Units.smallSpacing * 2 + Kirigami.Units.gridUnit * 3
-
-                    view.model: wpListModel.model
+                    view.model: defaultModel
                     view.delegate: KCM.GridDelegate {
                         // path is file://, safe to concat with '/'
                         text: title
@@ -214,8 +221,7 @@ RowLayout {
                             }
                         }
                         onClicked: {
-                            cfg_WallpaperFilePath = Common.getWpModelFileSource(model);
-                            cfg_WallpaperType = type;
+                            cfg_WallpaperSource = Common.packWallpaperSource(model);
                             cfg_WallpaperWorkShopId = workshopid;
                             view.currentIndex = index;
                         }
@@ -232,8 +238,6 @@ RowLayout {
                         visible: picViewGrid.view.count === 0
                         level: 2
                         text: { 
-                            if(!libcheck.folderlist)
-                                return `Please make sure qt-labs-folderlistmodel installed, and open this again`;
                             if(!(libcheck.qtwebsockets && pyext))
                                 return `Please make sure qtwebsockets(qml module) installed, and open this again`
                             if(!pyext.ok) {
@@ -243,12 +247,13 @@ RowLayout {
                                 return "Select your steam library through the folder selecting button above";
                             if(wpListModel.countNoFilter > 0)
                                 return `Found ${wpListModel.countNoFilter} wallpapers, but none of them matched filters`;
-                            return `There are no wallpapers in steam library's workshop directory`;
+                            return `There are no wallpapers in steam library`;
                         }
                         opacity: 0.5
                     }
                     function backtoBegin() {
-                        view.positionViewAtBeginning();
+                        view.model = defaultModel
+                        //view.positionViewAtBeginning();
                     }
 
                     function setCurIndex(model) {
@@ -263,7 +268,7 @@ RowLayout {
                             if(view.currentIndex == -1 && model.count != 0)
                                 view.currentIndex = 0;
 
-                            if(!cfg_WallpaperFilePath || cfg_WallpaperFilePath == "")
+                            if(!cfg_WallpaperSource)
                                 if(view.currentIndex != -1)
                                     view.currentItem.onClicked();
 
@@ -417,7 +422,7 @@ RowLayout {
                                     control_dir_size.visible = false;
                                     return false;
                                 }
-                                pyext.get_dir_size(dir.substring('file://'.length), 4).then(res => {
+                                pyext.get_dir_size(Common.urlNative(dir)).then(res => {
                                     this.text = Utils.prettyBytes(res);
                                     control_dir_size.visible = true;
                                 }).catch(reason => console.error(reason));
