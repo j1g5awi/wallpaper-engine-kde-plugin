@@ -21,8 +21,12 @@ Rectangle {
     property bool   mute: wallpaper.configuration.MuteAudio
     property bool   randomizeWallpaper: wallpaper.configuration.RandomizeWallpaper
     property bool   mouseInput: wallpaper.configuration.MouseInput
+
+    property bool   pauseAcPlugin: wallpaper.configuration.PauseAcPlugin
+    property int   pauseBatPercent: wallpaper.configuration.PauseBatPercent
+
     // auto pause
-    property bool   ok: windowModel.playVideoWallpaper
+    property bool   ok: !windowModel.reqPause && !powerSource.reqPause
 
     property string nowBackend: ""
 
@@ -49,7 +53,7 @@ Rectangle {
         if(type_changed) wallpaperType = type;
         if(path_changed) wallpaperPath = path;
 
-        if(type_changed || is_infobackend) {
+        if(type_changed || is_infobackend || !source) {
             loadBackend();
         } else if(path_changed) {
             backendLoader.item.source = path;
@@ -108,12 +112,17 @@ Rectangle {
             console.error(screenGrid);
             if(background.mouseHooker) background.mouseHooker.destroy();
             background.mouseHooker = Qt.createQmlObject(`import QtQuick 2.12;
-                    import com.github.catsout.wallpaperEngineKde 1.1
+                    import com.github.catsout.wallpaperEngineKde 1.2
                     MouseGrabber {
                         z: -1
                         anchors.fill: parent
                     }
             `, screenGrid);
+            /*
+            console.error(Common.genItemListStr(Window.contentItem, "  ", function(item) {
+                return `${item} {z: ${item.z}, w: ${item.width}, h: ${item.height}}`;
+            }));
+            */
             return true;
        }
        return false;
@@ -123,6 +132,17 @@ Rectangle {
         id: windowModel
         screenGeometry: wallpaper.parent.screenGeometry
         activity: wallpaper.parent.activity
+        filterByScreen: wallpaper.configuration.PauseFilterByScreen
+        modePlay: wallpaper.configuration.PauseMode
+        resumeTime: wallpaper.configuration.ResumeTime
+    }
+
+    PowerSource {
+        id: powerSource
+        readonly property bool reqPause: {
+            (background.pauseAcPlugin && !st_ac_plugin_in) ||
+            (background.pauseBatPercent !== 0 && st_battery_has && st_battery_percent < background.pauseBatPercent)
+        }
     }
 
     Pyext {
@@ -243,6 +263,7 @@ Rectangle {
         let qmlsource = "";
         let properties = {};
 
+    
         // check source
         if(!background.source) {
             backendLoader.loadInfoShow("Source is empty. The config may be broken.");

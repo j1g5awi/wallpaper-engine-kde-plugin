@@ -4,9 +4,11 @@ import QtQuick.Layouts 1.5
 
 import ".."
 import "../components"
+import "../utils.mjs" as Utils
 
 import org.kde.plasma.core 2.0 as PlasmaCore
 import org.kde.plasma.components 3.0 as PlasmaComponents
+import org.kde.kirigami 2.6 as Kirigami
 
 Flickable {
     id: settingTab
@@ -18,6 +20,10 @@ Flickable {
     property alias cfg_ResumeTime: resumeSpin.value
     property alias cfg_SwitchTimer: randomSpin.value
     property alias cfg_RandomizeWallpaper: ckbox_randomizeWallpaper.checked
+    property alias cfg_PauseFilterByScreen: ckbox_pauseFilterByScreen.checked
+
+    property alias cfg_PauseAcPlugin: ckbox_pauseAcPlugin.checked
+    property alias cfg_PauseBatPercent: spin_pauseBatPercent.value
 
     property int comboBoxWidth: themeWidth * 24
 
@@ -100,8 +106,31 @@ Flickable {
                         text: "Automatically pauses playback if any/focus/maximized window detected"
                         wrapMode: Text.Wrap
                     }
+               }
+            }
+            OptionItem {
+                text: 'Only check window on current screen'
+                text_color: Theme.textColor
+                actor: Switch {
+                    id: ckbox_pauseFilterByScreen
                 }
- 
+            }
+            OptionItem {
+                text: 'Pause if AC adapter not plugged in'
+                text_color: Theme.textColor
+                actor: Switch {
+                    id: ckbox_pauseAcPlugin
+                }
+            }
+            OptionItem {
+                text: 'Pause if battery level is below'
+                text_color: Theme.textColor
+                actor: SpinBox {
+                        id: spin_pauseBatPercent
+                        from: 0
+                        to: 100
+                        stepSize: 1
+                }
             }
             OptionItem {
                 text: 'Display'
@@ -285,6 +314,46 @@ Flickable {
                     }
                 }
 
+            }
+            OptionItem {
+                text: 'Shader cache'
+                text_color: Theme.textColor
+                icon: '../../images/information-outline.svg'
+                actor: Kirigami.ActionToolBar {
+                    Layout.fillWidth: true
+                    alignment: Qt.AlignRight
+                    flat: false
+                    actions: [
+                        Kirigami.Action {
+                            text: 'Show'
+                            tooltip: 'Show in file manager'
+                            onTriggered: {
+                                if(plugin_info.cache_path)
+                                    Qt.openUrlExternally(plugin_info.cache_path);
+                            }
+                        }
+                    ]
+                }
+                contentBottom: ColumnLayout {
+                    Text {
+                        Layout.fillWidth: true
+                        property string cache_path: Common.urlNative(plugin_info.cache_path)
+
+                        color: Theme.disabledTextColor
+                        text: plugin_info.cache_path
+                        ? `${cache_path} - ${cache_size}`
+                        : `Not available`
+
+                        property string cache_size: {
+                            if(pyext) {
+                                pyext.get_dir_size(this.cache_path).then(res => {
+                                    this.cache_size = Utils.prettyBytes(res);
+                                }).catch(reason => console.error(reason));
+                            }
+                            return "? MB";
+                        }
+                    }
+                }
             }
         }
     }

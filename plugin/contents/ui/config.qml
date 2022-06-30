@@ -18,14 +18,17 @@ ColumnLayout {
     property string cfg_FilterStr
     property int    cfg_SortMode
 
-    property alias  cfg_Fps:                settingPage.cfg_Fps
-    property alias  cfg_Volume:             settingPage.cfg_Volume
-    property alias  cfg_VideoRate:          settingPage.cfg_VideoRate
-    property alias  cfg_MuteAudio:          settingPage.cfg_MuteAudio
-    property alias  cfg_MouseInput:         settingPage.cfg_MouseInput
-    property alias  cfg_ResumeTime:         settingPage.cfg_ResumeTime
-    property alias  cfg_SwitchTimer:        settingPage.cfg_SwitchTimer
-    property alias  cfg_RandomizeWallpaper: settingPage.cfg_RandomizeWallpaper
+    property alias  cfg_Fps:                 settingPage.cfg_Fps
+    property alias  cfg_Volume:              settingPage.cfg_Volume
+    property alias  cfg_VideoRate:           settingPage.cfg_VideoRate
+    property alias  cfg_MuteAudio:           settingPage.cfg_MuteAudio
+    property alias  cfg_MouseInput:          settingPage.cfg_MouseInput
+    property alias  cfg_ResumeTime:          settingPage.cfg_ResumeTime
+    property alias  cfg_SwitchTimer:         settingPage.cfg_SwitchTimer
+    property alias  cfg_RandomizeWallpaper:  settingPage.cfg_RandomizeWallpaper
+    property alias  cfg_PauseFilterByScreen: settingPage.cfg_PauseFilterByScreen
+    property alias  cfg_PauseAcPlugin:       settingPage.cfg_PauseAcPlugin
+    property alias  cfg_PauseBatPercent:     settingPage.cfg_PauseBatPercent
     property int    cfg_DisplayMode
     property int    cfg_FocusPauseMode
     property int    cfg_MaximizedPauseMode
@@ -63,6 +66,23 @@ ColumnLayout {
         qtwebchannel: Common.checklib_webchannel(root)
     })
 
+
+                    
+    property var plugin_info: {
+        if(!libcheck.wallpaper) {
+            plugin_info = {
+                version: "-",
+                cache_path: null
+            }
+        } else {
+            plugin_info = Qt.createQmlObject(`
+                import QtQuick 2.0;
+                import com.github.catsout.wallpaperEngineKde 1.2
+                PluginInfo {}
+            `, this);
+        }
+    }
+
     property var pyext: {
         if(!libcheck.qtwebsockets) {
             pyext = null
@@ -88,7 +108,6 @@ ColumnLayout {
 
     Component.onDestruction: {
         if(this.pyext) this.pyext.destroy();
-        if(this.wpListModel) this.wpListModel.destroy();
     }
 
     function saveCustomConf() {

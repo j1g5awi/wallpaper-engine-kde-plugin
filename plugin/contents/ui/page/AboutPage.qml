@@ -40,7 +40,11 @@ Flickable {
                         <li>Subscribe to some wallpapers on the Workshop</li>
                         <li>Select the <i>steamlibrary</i> folder on the Wallpapers tab of this plugin
                             <ul>
-                                <li>The <i>steamlibrary</i> which contains the <i>steamapps</i> folder</li>
+                                <li>The <i>steamlibrary</i> which contains the <i>steamapps</i> folder
+                                    <ul>
+                                        <li>This is usually <i>~/.local/share/Steam</i> by default</li>
+                                    </ul>
+                                </li>
                                 <li><i>Wallpaper Engine</i> needs to be installed in this <i>steamlibrary</i></li>
                             </ul>
                         </li>
@@ -83,6 +87,27 @@ Flickable {
                 onClicked: Qt.openUrlExternally(Common.repo_url)
             }
         }
+
+        OptionItem {
+            text: 'Version'
+            text_color: Theme.textColor
+            icon: '../../images/tag.svg'
+            contentBottom: ColumnLayout {
+                Text {
+                    Layout.fillWidth: true
+                    color: Theme.disabledTextColor
+                    text: `
+                        <ul>
+                        <li>${Common.version}</li>
+                        <li>plugin lib: ${plugin_info.version}</li>
+                        </ul>
+                    `
+                    wrapMode: Text.Wrap
+                    textFormat: Text.RichText
+                }
+            }
+        }
+ 
         OptionItem {
             text: 'Lib Checking'
             text_color: Theme.textColor

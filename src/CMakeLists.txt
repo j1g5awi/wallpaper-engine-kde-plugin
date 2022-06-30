@@ -1,4 +1,6 @@
 find_package(Qt5 COMPONENTS Quick Qml REQUIRED)
+
+SET(BUILD_QML ON CACHE BOOL "")
 add_subdirectory(backend_scene)
 
 set(CMAKE_AUTOMOC ON)
@@ -9,6 +11,7 @@ add_library(${PROJECT_NAME}
 	SHARED
 	plugin.cpp
 	MouseGrabber.cpp
+    PluginInfo.cpp
 	qmldir
 )
 
@@ -16,7 +19,7 @@ target_link_libraries(${PROJECT_NAME}
 	PRIVATE
 	Qt5::Quick
 	Qt5::Qml
-	scenebackend
+	wescene-renderer-qml
 )
 set_target_properties(${PROJECT_NAME} PROPERTIES CXX_VISIBILITY_PRESET hidden)
 set_target_properties(${PROJECT_NAME}

@@ -70,15 +70,20 @@ Item {
 
     property bool mute: false
 
-    property int resumeTime: wallpaper.configuration.ResumeTime
+    property alias filterByScreen: tasksModel.filterByScreen
+    property alias resumeTime: playTimer.interval
+    property int modePlay
+
+    // ---
+    readonly property bool reqPause: _reqPause
+    property bool _reqPause: false
 
     Timer{
         id: playTimer
         running: false
         repeat: false
-        interval: resumeTime
         onTriggered: {
-            playVideoWallpaper = true;
+            _reqPause = false;
         }
     }
     function play() {
@@ -87,7 +92,7 @@ Item {
     }
     function pause() {
         playTimer.stop();
-        playVideoWallpaper = false;
+        _reqPause = true;
     }
     
     function playBy(pauseMode) {
@@ -132,7 +137,9 @@ Item {
         filterByVirtualDesktop: true
 
         screenGeometry: wModel.screenGeometry
-        filterByScreen: true
+
+        // in alias
+        // filterByScreen: true
 
         // demandingAttentionSkipsFilters not available here, which may cause, 
         // skip activity filter, so filter activties manually
@@ -210,8 +217,8 @@ Item {
     function _updateWindowsinfo() {
         const basefilters = {
             IsWindow: true,
-            SkipTaskbar: false,
-            SkipPager: false
+//            SkipTaskbar: false,
+//            SkipPager: false
         };
         const taskFilter = genTaskModelFilter(tasksModel);
         const baseWModel = taskFilter.filterCallback((getproperty) => {

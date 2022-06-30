@@ -9,6 +9,8 @@
 #include "SceneWallpaper.hpp"
 #include "SceneWallpaperSurface.hpp"
 
+#include "Utils/Platform.hpp"
+
 using namespace std;
 
 atomic<bool> renderCall(false);
@@ -85,6 +87,12 @@ int main(int argc, char** argv) {
     psw->setPropertyString(wallpaper::PROPERTY_SOURCE, program.get<std::string>(ARG_SCENE));
     psw->setPropertyBool(wallpaper::PROPERTY_GRAPHIVZ, program.get<bool>(OPT_GRAPHVIZ));
     psw->setPropertyInt32(wallpaper::PROPERTY_FPS, program.get<int32_t>(OPT_FPS));
+
+    std::string cache_path = program.get<std::string>(OPT_CACHE_PATH);
+    if (cache_path.empty())
+        cache_path = wallpaper::platform::GetCachePath("wescene-renderer");
+    psw->setPropertyString(wallpaper::PROPERTY_CACHE_PATH, cache_path);
+
 
     glfwSetWindowUserPointer(window, &data);
 

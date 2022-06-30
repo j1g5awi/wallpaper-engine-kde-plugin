@@ -20,6 +20,8 @@ QtObject {
         Modified
     }
 
+    readonly property string version: '0.5.3'
+
     readonly property string repo_url: 'https://github.com/catsout/wallpaper-engine-kde-plugin'
 
     readonly property var wpitem_template: ({
@@ -231,7 +233,7 @@ QtObject {
     }
 
     function checklib_wallpaper(parentItem) {
-        return checklib('com.github.catsout.wallpaperEngineKde 1.1', parentItem);
+        return checklib('com.github.catsout.wallpaperEngineKde 1.2', parentItem);
     }
 
     function checklib_folderlist(parentItem) {
@@ -277,6 +279,16 @@ QtObject {
             }
         }
         return null;
+    }
+    function genItemListStr(item, indent0, tostr) {
+        function gen(item, indent) {
+            let res = `${indent}${tostr(item)}\n`
+            for (let i = 0; i < item.children.length; i++) {
+                res += gen(item.children[i], indent + indent0); 
+            }
+            return res;
+        }
+        return gen(item, "");
     }
     function createVolumeFade(qobj, volume, changePlayerVolum) {
         const timer = Qt.createQmlObject(`import QtQuick 2.0; Timer {

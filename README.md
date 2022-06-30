@@ -10,7 +10,6 @@ A wallpaper plugin integrating [wallpaper engine](https://store.steampowered.com
 - Support **scene(2d)**,**video**,**web** wallpaper types
 - Requires *Wallpaper Engine* installed on steam
 - Requires Python 3.3+
-- Requires CMake 3.16+
 - Requires Qt 5.13+ for playing video
 - Requires Vulkan 1.1+, Opengl [External Memory Object](https://www.khronos.org/registry/OpenGL/extensions/EXT/EXT_external_objects.txt) extension
 - Requires [vulkan driver](https://wiki.archlinux.org/title/Vulkan#Installation) installed  
@@ -85,6 +84,7 @@ sudo make install
 2. Subscribe to some wallpapers on the Workshop
 3. Select the *steamlibrary* folder on the Wallpapers tab of this plugin
 	- The *steamlibrary* which contains the *steamapps* folder
+		- This is usually `~/.local/share/Steam` by default
 	- *Wallpaper Engine* needs to be installed in this *steamlibrary*
 
 ### Restart KDE
@@ -120,14 +120,15 @@ make
 [glslang](https://github.com/KhronosGroup/glslang) - Glsl to Spv  
 [Vulkan-Hpp](https://github.com/KhronosGroup/Vulkan-Hpp) - Vulkan C++ API  
 [VulkanMemoryAllocator](https://github.com/GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator) - Vulkan memory allocation library  
-#### implemented
+#### supported
 - [x] Layer
 	- [x] Image
 	- [x] Composition / Fullscreen
 	- [ ] Text
 - [x] Effect
-	- [x] Mouse position
+	- [x] Mouse position with delay
 	- [x] Parallax
+    - [x] Depth Parallax
 	- [x] ColorBlendMode
 	- [x] PBR light
 	- [ ] Global bloom
@@ -153,6 +154,7 @@ make
 - [ ] 3D model
 - [ ] Timeline animations
 - [ ] Scenescript  
+- [ ] User Properties
 
 ### Web
 Basic web apis are supported, but the audio api does not send data for now.  
